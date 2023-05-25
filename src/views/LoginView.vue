@@ -20,7 +20,10 @@
 
 <script lang="ts">
 import { LoginData } from "@/type/login";
-import { defineComponent, reactive, toRefs } from "vue";
+import { defineComponent, reactive, toRefs, ref } from "vue";
+import { FormInstance } from "element-plus";
+import { login } from "@/request/api"
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
@@ -56,7 +59,38 @@ export default defineComponent({
       ],
     }
 
+    // 登录
+    const ruleFormRef = ref<FormInstance>()
+      const router = useRouter()  //-->$router
+    const submitForm = (formEl: FormInstance | undefined) => {
+      if (!formEl) return
+      // 对表单的内容进行验证
+      // valid布尔类型，为true表示验证成功，反之验证错误
+      formEl.validate((valid) => {
+        if (valid) {
+          login(data.ruleForm).then((res) => {
+            // console.log(res)
+            // 1、将token保存
+            localStorage.setItem("token", "res.data.token")
+            // 2、跳转页面
+            router.push('/')
+          })
+        } else {
+          console.log('error submit!')
+          return false
+        }
+      })
+    }
+    // 重置
+    const resetForm = () => {
+      data.ruleForm.username = ""
+      data.ruleForm.password = ""
+    }
+
     return {
+      ruleFormRef,
+      resetForm,
+      submitForm,
       ...toRefs(data),
       rules
     };
