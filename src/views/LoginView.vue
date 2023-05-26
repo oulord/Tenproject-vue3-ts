@@ -26,9 +26,9 @@ import { login } from "@/request/api"
 import { useRouter } from "vue-router";
 
 export default defineComponent({
+  name:"LoginView",
   setup() {
     const data = reactive(new LoginData());
-
 
     const rules = {
       username: [

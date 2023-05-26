@@ -18,17 +18,17 @@
             <el-container>
                 <el-aside width="200px">
                     <el-menu active-text-color="#ffd04b" background-color="#545c64" class="el-menu-vertical-demo"
-                        default-active="2" text-color="#fff">
+                        default-active="2" text-color="#fff" router>
 
-                        <el-menu-item index="2">
-                            <el-icon><icon-menu /></el-icon>
-                            <span>商品列表</span>
+                        <el-menu-item :index="item.path" v-for="item in list" :key="item.path">
+                            <el-icon></el-icon>
+                            <span>{{ item.meta.title }}</span>
                         </el-menu-item>
                     </el-menu>
                 </el-aside>
 
                 <!-- 左边路由视图 -->
-                <el-main>Main</el-main>
+                <el-main><router-view></router-view></el-main>
             </el-container>
         </el-container>
     </div>
@@ -36,12 +36,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
+    name: "HomeView",
     setup() {
+        const router = useRouter()
+        // console.log(router.getRoutes());
+        const list = router.getRoutes().filter(v => v.meta.isShow)
+        // console.log(list);
 
-
-        return {}
+        return { list }
     }
 })
 </script>
