@@ -19,8 +19,8 @@ export class InitData {
         introduce:"",
         page:1,
         count:0,
-        pagesize:5
+        pagesize:6
     }
-    list: ListInt[] = []   //展示的内容的数据
+    list: ListInt[] = []   //展示的内容的数据，接收从后台返回的数据
 }
 
