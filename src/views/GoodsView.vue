@@ -32,9 +32,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue'
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
 import { getGoodsList } from '@/request/api'
-import { InitData } from '@/type/goods'
+import { InitData, ListInt } from '@/type/goods'
+import { dataType } from 'element-plus/es/components/table-v2/src/common'
 
 export default defineComponent({
     name: "GoodsView",
@@ -42,6 +43,7 @@ export default defineComponent({
         const data = reactive(new InitData())
         // console.log(data);
 
+        // 赋值
         getGoodsList().then(res => {
             // console.log(res);
             data.list = res.data
@@ -65,7 +67,45 @@ export default defineComponent({
             data.selectData.pagesize = pagesize
         }
 
-        return { ...toRefs(data), currentChange, sizeChange, dataList }
+        // 完成查询功能
+        const onSubmit = () => {
+            // 定义数组，用来接受查询过后要展示的数据
+            let arr: ListInt[] = []
+            // 判断两个输入框是否有值
+            if (data.selectData.title || data.selectData.introduce) {
+                if (data.selectData.title) {
+                    // 将过滤的数组赋值给arr 
+                    arr = data.list.filter((value) => {
+                        return value.title.indexOf(data.selectData.title) !== -1
+                    })
+                }
+                if (data.selectData.introduce) {
+                    // 将过滤的数组赋值给arr 
+                    arr = data.list.filter((value) => {
+                        return value.introduce.indexOf(data.selectData.introduce) !== -1
+                    })
+                }
+            } else {
+                arr = data.list
+            }
+            // 改变数组
+            data.list = arr
+            // 重新渲染数据
+            data.selectData.count = arr.length
+        }
+
+        // 监听查询框的两个属性
+        watch([() => data.selectData.title, () => data.selectData.introduce], () => {
+            if (data.selectData.title == '' && data.selectData.introduce == '') {
+                getGoodsList().then(res => {
+                    // console.log(res);
+                    data.list = res.data
+                    data.selectData.count = res.data.length
+                })
+            }
+        })
+
+        return { ...toRefs(data), currentChange, sizeChange, dataList, onSubmit }
     }
 })
 </script>
