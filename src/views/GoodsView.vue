@@ -32,10 +32,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
+import { defineComponent, reactive, toRefs, computed, watch, onMounted } from 'vue'
 import { getGoodsList } from '@/request/api'
 import { InitData, ListInt } from '@/type/goods'
-import { dataType } from 'element-plus/es/components/table-v2/src/common'
 
 export default defineComponent({
     name: "GoodsView",
@@ -43,12 +42,18 @@ export default defineComponent({
         const data = reactive(new InitData())
         // console.log(data);
 
-        // 赋值
-        getGoodsList().then(res => {
-            // console.log(res);
-            data.list = res.data
-            data.selectData.count = res.data.length
+        onMounted(() => {
+            getGoods()
         })
+
+        const getGoods= () => {
+            // 赋值
+            getGoodsList().then(res => {
+                // console.log(res);
+                data.list = res.data
+                data.selectData.count = res.data.length
+            })
+        }
 
         // 对数据进行分割
         const dataList = reactive({
@@ -97,11 +102,7 @@ export default defineComponent({
         // 监听查询框的两个属性
         watch([() => data.selectData.title, () => data.selectData.introduce], () => {
             if (data.selectData.title == '' && data.selectData.introduce == '') {
-                getGoodsList().then(res => {
-                    // console.log(res);
-                    data.list = res.data
-                    data.selectData.count = res.data.length
-                })
+                getGoodsList()
             }
         })
 
