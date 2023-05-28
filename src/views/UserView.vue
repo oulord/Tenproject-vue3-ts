@@ -32,12 +32,42 @@
                     </el-button>
                 </template>
             </el-table-column>
+            <el-table-column prop="role" label="操作">
+                <!-- 使用插槽 -->
+                <template #default="scope">
+                    <el-button link type="primary" size="small" @click="changeUser(scope.row)">
+                        编辑
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
+
+    <!-- 编辑用户的弹出窗-->
+    <el-dialog v-model="isShow" title="编辑用户信息">
+        <el-form :model="active">
+            <el-form-item label="姓名" label-width="120px">
+                <el-input v-model="active.nickName" autocomplete="off" />
+            </el-form-item>
+
+            <el-form-item label="角色" label-width="120px">
+                <el-select multiple v-model="active.role" class="m-2" size="large" placeholder="请选择角色">
+                    <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
+                </el-select>
+            </el-form-item>
+
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="Cancel = false">取消</el-button>
+                <el-button type="primary" @click="updateUser">修改</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs, watch } from 'vue'
 import { getUserList, getRoleList } from '@/request/api'
 import { ListInt, InitData } from '@/type/user'
 
@@ -65,7 +95,52 @@ export default defineComponent({
             })
         }
 
-        return { ...toRefs(data) }
+        // 完成查询功能
+        const onSubmit = () => {
+            // 定义数组，用来接受查询过后要展示的数据
+            let arr: ListInt[] = []
+            // 判断两个输入框是否有值
+            if (data.selectData.nickName || data.selectData.role) {
+                if (data.selectData.nickName) {
+                    // 将过滤的数组赋值给arr 
+                    arr = data.list.filter((value) => {
+                        return value.nickName.indexOf(data.selectData.nickName) !== -1
+                    })
+                }
+                if (data.selectData.role) {
+                    // 将过滤的数组赋值给arr 
+                    arr = (data.selectData.nickName ? arr : data.list).filter((value) => {
+                        return value.role.find((item) => {
+                            item.role === data.selectData.role
+                        })
+                    })
+                }
+            } else {
+                arr = data.list
+            }
+            // 改变数组
+            data.list = arr
+        }
+
+        // 监听查询框的两个属性
+        watch([() => data.selectData.nickName, () => data.selectData.role], () => {
+            if (data.selectData.nickName == '' || data.selectData.role == 0) {
+                getUser()
+            }
+        })
+
+        // 完成编辑功能
+        const changeUser = (row: ListInt) => {
+            data.active = {
+                id: row.id,
+                nickName: row.nickName,
+                userName: row.userName,
+                role: row.role.map((value) => value.role),
+            }
+            data.isShow = true
+        }
+
+        return { ...toRefs(data), onSubmit, changeUser }
     }
 })
 </script>

@@ -15,8 +15,15 @@ export class InitData {
         role: 0,
         nickName: ""
     }
-    list: ListInt[] = []          //用来接收用户信息的列表
+    list: ListInt[] = []             //用来接收用户信息的列表
     roleList: RoleListInt[] = []     //用来接收角色信息的列表
+    isShow = false                   // 是否显示编辑用户弹出窗
+    active: ActiveInt = {            //编辑时用到的对象
+        id:0,
+        nickName:"",
+        role:[],
+        userName:""
+    }
 }
 
 interface selectDataInt {
@@ -30,3 +37,9 @@ interface RoleListInt {
     roleName: string
 }
 
+interface ActiveInt {
+    id: number
+    nickName: string
+    role: number[]
+    userName: string
+}
