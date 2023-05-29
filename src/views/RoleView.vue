@@ -24,13 +24,15 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getRoleList } from '@/request/api';
-import { InitData } from '@/type/role';
+import { getRoleList, } from '@/request/api';
+import { InitData, ListInt } from '@/type/role';
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
     name: "RoleView",
     setup() {
         const data = reactive(new InitData())
+        const router = useRouter()
 
         onMounted(() => {
             getRoleList().then(res => {
@@ -39,6 +41,7 @@ export default defineComponent({
             })
         })
 
+        // 添加角色
         const addRole = () => {
             ElMessageBox.prompt('请输入角色名称', '添加角色', {
                 confirmButtonText: '添加',
@@ -66,7 +69,18 @@ export default defineComponent({
                 })
         }
 
-        return { ...toRefs(data), addRole }
+        // 修改权限
+        const ChangeRole = (row: ListInt) => {
+            router.push({
+                path: 'authority',
+                query: {
+                    id: row.roleId,
+                    authority: row.authority.join(',')
+                }
+            })
+        }
+
+        return { ...toRefs(data), addRole, ChangeRole }
     }
 })
 </script>
