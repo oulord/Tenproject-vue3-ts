@@ -59,7 +59,7 @@
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="Cancel = false">取消</el-button>
+                <el-button @click="isShow = false">取消</el-button>
                 <el-button type="primary" @click="updateUser">修改</el-button>
             </span>
         </template>
@@ -135,12 +135,25 @@ export default defineComponent({
                 id: row.id,
                 nickName: row.nickName,
                 userName: row.userName,
-                role: row.role.map((value) => value.role),
+                role: row.role.map((value: any) => value.role || value.roleId),
             }
             data.isShow = true
         }
 
-        return { ...toRefs(data), onSubmit, changeUser }
+        // 更改数据
+        const updateUser = () => {
+            let obj: any = data.list.find((value) => value.id == data.active.id)
+            obj.nickName = data.active.nickName
+            obj.role = data.roleList.filter(value => data.active.role.indexOf(value.roleId) !== -1)
+            data.list.forEach((item, i) => {
+                if (item.id == obj.id) {
+                    data.list[i] = obj
+                }
+            })
+            data.isShow = false
+        }
+
+        return { ...toRefs(data), onSubmit, changeUser, updateUser }
     }
 })
 </script>
