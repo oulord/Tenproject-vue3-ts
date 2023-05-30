@@ -6,6 +6,8 @@ const routes: Array<RouteRecordRaw> = [
         path: '/',
         name: 'home',
         component: HomeView,
+        // 重定向
+        redirect: "goods",
         children: [
             {
                 path: "goods",
@@ -43,6 +45,17 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+})
+
+// 设置全局路由守卫
+router.beforeEach((to, from, next) => {
+    const token: string | null = localStorage.getItem("token")
+    if (!token && to.path !== "/login") {
+        next("/login")
+    }
+    else {
+        next()
+    }
 })
 
 export default router

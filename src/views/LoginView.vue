@@ -71,7 +71,7 @@ export default defineComponent({
           login(data.ruleForm).then((res) => {
             // console.log(res)
             // 1、将token保存
-            localStorage.setItem("token", "res.data.token")
+            localStorage.setItem("token", res.data.token)
             // 2、跳转页面
             router.push('/')
           })

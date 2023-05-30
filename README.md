@@ -12,6 +12,8 @@
 
 up主使用的IDE是VsCode, 而我使用的是IDEA
 
+![](C:\Users\郭聿良\AppData\Roaming\Typora\typora-user-images\image-20230530205252434.png)
+
 ## 下载使用
 
 首先复制仓库链接, 下载仓库到本地
