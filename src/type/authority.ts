@@ -13,4 +13,5 @@ export class InitData {
         this.authority = authority
     }
     list: ListInt[] = []
+    treeRef:any
 }

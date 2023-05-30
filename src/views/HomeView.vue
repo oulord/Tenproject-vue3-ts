@@ -18,7 +18,7 @@
             <el-container>
                 <el-aside width="200px">
                     <el-menu active-text-color="#ffd04b" background-color="#545c64" class="el-menu-vertical-demo"
-                        default-active="2" text-color="#fff" router>
+                        :default-active="active" text-color="#fff" router>
 
                         <el-menu-item :index="item.path" v-for="item in list" :key="item.path">
                             <el-icon></el-icon>
@@ -36,17 +36,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 export default defineComponent({
     name: "HomeView",
     setup() {
         const router = useRouter()
+        const route = useRoute()
         // console.log(router.getRoutes());
         const list = router.getRoutes().filter(v => v.meta.isShow)
         // console.log(list);
 
-        return { list }
+        return { list,active:route.path }
     }
 })
 </script>

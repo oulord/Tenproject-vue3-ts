@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-tree :data="list" show-checkbox node-key="roleId" :check-strictly="true" :default-checked-keys="authority"
-            :props="{
+            ref="treeRef" :props="{
                 children: 'roleList',
                 label: 'name'
             }" />
@@ -30,9 +30,15 @@ export default defineComponent({
             })
         })
 
+        // 修改按钮
+        const changeAuthority = () => {
+            console.log(data.treeRef.getCheckedKeys().sort(function (a: number, b: number) { return a - b }));
+            // 传给后台, 后台去进行修改
+        }
+
         const data = reactive(new InitData(params.id, params.authority))
 
-        return { ...toRefs(data) }
+        return { ...toRefs(data), changeAuthority }
     }
 })
 </script>
