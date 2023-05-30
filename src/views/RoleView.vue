@@ -72,10 +72,10 @@ export default defineComponent({
         // 修改权限
         const ChangeRole = (row: ListInt) => {
             router.push({
-                path: 'authority',
-                query: {
+                name: 'authority',
+                params: {
                     id: row.roleId,
-                    authority: row.authority.join(',')
+                    authority: row.authority
                 }
             })
         }
